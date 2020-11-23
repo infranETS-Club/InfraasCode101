@@ -50,7 +50,7 @@ Pour que Ansible / Terraform fonctionne correctement, il faut avoir une clé SSH
 - Retenir le path de la clé, vous en aurez besoin pour Ansible plus tard
 
 ## Création de votre infrastructure
-Vous allez devoir compléter le script afin de faire votre infrastructure. Je vais vous accompagner tout le long du workshop.
+Vous allez devoir compléter le script afin de faire votre infrastructure. Nous allons vous accompagner tout le long du workshop.
 
 ### Étape 1 : Paramétrer vos variables
 Voir le fichier ```variable.tf```
