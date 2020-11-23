@@ -155,6 +155,7 @@ Pour se connecter à l’une au l’autre des instances, il faut utiliser la pro
 - En l’ouvrant, sous "Host Name", mettre ```ubuntu@<ip de l’instance>```
 - Pour sélectionner le certificat, sous ```Connection -> SSH```, cliquer sur ```Auth```
 - Sous la section Authentification parameters, cliquer sur ```Browse...``` et sélectionner la clé privée que vous venez de créer (format .ppk, important)
+    - Pour convertir une clé privé .pem et .ppk, suivre cette procédure : https://aws.amazon.com/premiumsupport/knowledge-center/convert-pem-file-into-ppk/
 - Cliquer sur ```Open``` en bas à droite
 
 ### Avec l’outil cli SSH
