@@ -1,6 +1,9 @@
 ---
   # NE PAS MODIFIER CE FICHIER
 - hosts: backends
+  vars:
+  remote_user: ubuntu
+  become: yes
   tasks:
     - name: Mise à jour de tous les paquets APT
       apt: 
@@ -27,7 +30,7 @@
     - name: Ajout de la template pour la page par défaut
       template:
         src: templates/index.html.j2
-        dest: /var/www/index.html
+        dest: /var/www/html/index.html
         owner: www-data
         group: www-data
     

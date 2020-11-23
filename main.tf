@@ -3,6 +3,7 @@ resource "aws_subnet" "iac_subnet" {
   vpc_id                  = data.aws_vpc.workshop.id
   cidr_block              = var.subnet_CIDR
   map_public_ip_on_launch = true
+  availability_zone       = "ca-central-1a"
 
   tags = {
     Name = "${var.prefix}_iac_subnet"
