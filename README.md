@@ -17,6 +17,31 @@ Pour vérifier que tout fonctionne bien, faire la commande ```ansible-playbook -
 ### Important
 Pour que le playbook d’Ansible fonctionne bien, il faut absolument que vous exécutez Terraform et Ansible dans la même arborescence puisque Terraform "donne" des informations à Ansible pour bien fonctionner.
 
+## Identifiants AWS (credentials)
+Pour que terraform utilise facilement les credentials d'AWS, faites comme suit :
+
+- Créer un dossier `.aws` au root de votre user
+  - Windows : `cd %userprofile%`
+  - Linux : `cd ~/`
+- Créer 2 fichiers sans extension : ```credentials``` et ```config```
+- Ajouter ce qui suit dans les fichiers
+
+credentials
+```HCL
+[default]
+aws_access_key_id = votre_key_id
+aws_secret_access_key = votre_access_key
+```
+
+config
+```HCL
+[default]
+region = ca-central-1
+output = json
+```
+
+Ainsi, Terraform devrait automatiquement utiliser cette configuration d'identifiants.
+
 ## Création de votre infrastructure
 Vous allez devoir compléter le script afin de faire votre infrastructure. Je vais vous accompagner tout le long du workshop.
 
