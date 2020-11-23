@@ -47,7 +47,7 @@ Pour que Ansible / Terraform fonctionne correctement, il faut avoir une clé SSH
 - Télécharger une key pair au format .pem (important!) à partir de la console d'AWS
 - Si vous utiliser un Windows, premièrement copier la clé dans votre répertoire personnel de Linux (```cp nomDeLaCle.pem ~/```)
 - Changer les permissions de la clé pour qu'elle respecte les règles d'AWS : ```chmod 700 nomDeLaCle.pem```
-- retenir le path de la clé, vous en aurez besoin pour Ansible plus tard
+- Retenir le path de la clé, vous en aurez besoin pour Ansible plus tard
 
 ## Création de votre infrastructure
 Vous allez devoir compléter le script afin de faire votre infrastructure. Je vais vous accompagner tout le long du workshop.
