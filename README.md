@@ -101,7 +101,7 @@ Vous remarquerez la présence des options `ami` pour l’image utilisée (Ubuntu
 À la suite de vos VM dans le fichier `main.tf` ajoutez : 
 ```HCL
 resource "aws_elb" "lb" {
-  name            = "load-balancer"
+  name            = "${var.prefix}-load-balancer"
   subnets         = [aws_subnet.iac_subnet.id]
   security_groups = [aws_security_group.elb.id]
 
