@@ -1,0 +1,4 @@
+.terraform/
+inventory
+*.backup
+*.tfstate

@@ -1,0 +1,7 @@
+[backends]
+%{ for index, ip in backs ~}
+${private-dns[index]} ansible_host=${ip}
+%{ endfor ~}
+
+[backends:vars]
+ansible_python_interpreter=/usr/bin/python3
