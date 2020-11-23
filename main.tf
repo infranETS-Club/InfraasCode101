@@ -37,7 +37,7 @@ resource "aws_security_group" "default" {
   vpc_id = data.aws_vpc.workshop.id
 
   # TODO Il manque une règle pour le port SSH 22 en entrant (ingress)
-  # TODO Il manque une règle pour le trafic sortant (egress)
+
 
   ingress {
     from_port   = 80
@@ -45,8 +45,11 @@ resource "aws_security_group" "default" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  # TODO Il manque une règle pour le trafic sortant (egress)
 
-  
+  tags = {
+    Name = "${var.prefix}_iac_sg"
+  }
 }
 
 # Creation des règles de parfeu pour le LB
@@ -81,6 +84,6 @@ resource "aws_lb_cookie_stickiness_policy" "default" {
   cookie_expiration_period = 600
 }
 
-# TODO Il manque les VMs
+# TODO Il manque les VMs (appelé instance dans AWS)
 
 # TODO Il manque le Load Balancer

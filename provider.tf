@@ -4,7 +4,6 @@ terraform {
 }
 
 provider "aws" {
-  region  = "ca-central-1"
   version = "~> 3.0"
-  profile = "workshop"
+  region  = "ca-central-1"
 }

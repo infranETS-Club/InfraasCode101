@@ -1,36 +1,33 @@
-# Workshop Infrastructure as Code - Infranets en partenariat avec la Banque Nationale
-## Installation Terraform
-Pour que Terraform, il faut installer le bon éxécutable
+# Workshop Infrastructure as Code - InfranETS en partenariat avec la Banque Nationale
+## Installer Terraform
+Pour que Terraform, il faut installer le bon exécutable
 - Télécharger le fichier binaire à partir de ce site : https://www.terraform.io/downloads.html
-- Déziper le package
-- Déplacer le fichier éxécutable dans le PATH de votre ordinateur
-    - Windows : C:\Windows\ (droits administrateurs requis)
-    - Linux : \usr\bin (peut varier selon le distro)
+- Dézipper le package
+- Déplacer le fichier exécutable dans le PATH de votre ordinateur
+    – Windows : C:\Windows\ (droits administrateur requis)
+    – Linux : /usr/bin (peut varier selon le distro)
 - Redémarrer le CLI et essayer la commande ```terraform version```
 
-## Variable
-Il y aura quelque variable à changer pour que le script terraform fonctionne. Voir le fichier variable.tf
+## Installer Ansible
+Malheureusement, le CLI de Ansible n’est pas tout à fait compatible pour Windows. Ainsi, il faudra utiliser une distro de Linux pour exécuter la commande. Si vous avez seulement un ordinateur Windows, vous pouvez facilement utiliser le Windows subsystem Linux (WSL) pour faire cela (voir [ici](https://ubuntu.com/tutorials/ubuntu-on-windows) pour savoir comment faire). 
 
-## Connexion SSH aux instance
-Pour se connecter à l'une au l'autre des instance, il faut utiliser le procédure suivante : 
+Pour installer Ansible, utiliser votre disto préféré de Linux et suivre les étapes décrites sur ce site : https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
 
-### Avec Putty (Windows)
-- Télécharger l'outil puTTY : https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
-- En l'ouvrant, sous "Host Name", mettre ```ubuntu@<ip de l'instance>```
-- Pour sélectionner le certificat (format .ppk, important), sous ```Connection -> SSH```, cliquer sur ```Auth```
-- Sous la section Authentification parameters, cliquer sur ```Browse...``` et sélectionner la clé privé que vous venez de créer (format.ppk)
-- Cliquer sur ```Open``` en bas à droite
-
-### Avec l'outil cli ssh
-- Le format de la clé privée doit être .PEM
-- Faire la commande : ```ssh -i "/path/de/la/cle/prive.pem" ubuntu@<ip de l'instance>``` (format .pem, important)
-
-Exemple : ```ssh -i "./infranets.pem" ubuntu@1.2.3.4```
+Pour vérifier que tout fonctionne bien, faire la commande ```ansible-playbook --version```
+### Important
+Pour que le playbook d’Ansible fonctionne bien, il faut absolument que vous exécutez Terraform et Ansible dans la même arborescence puisque Terraform "donne" des informations à Ansible pour bien fonctionner.
 
 ## Création de votre infrastructure
 Vous allez devoir compléter le script afin de faire votre infrastructure. Je vais vous accompagner tout le long du workshop.
 
 ### Étape 1 : Paramétrer vos variables
+Voir le fichier ```variable.tf```
+
+Pour le ```subnet_CIDR```, il faudra utiliser le sous-réseau avec le numéro que l’on vous a donné. Par exemple, si votre numéro est le 24, votre sous-réseau sera ```172.31.24.0/24```
+
+Pour la ```key name```, s’arrurer d’utiliser le même nom que vous avez entré dans la console d’AWS
+
+Pour le préfix, mettre la première chose qui vous passe par la tête, en un mot 😅
 
 ### Étape 2 : Définir les règles du pare-feu
 Dans le fichier `main.tf`, vous pouvez configurer le pare-feu dans le bloc `"aws_security_group" "default"`. Il manque deux règles dans ce bloc :
@@ -49,10 +46,10 @@ egress {
     cidr_blocks = ["0.0.0.0/0"]
 }
 ```
-Ici la règle `ingress` indique quand une communication rentre sur le port `22/tcp` depuis toutes les adresses IP `0.0.0.0/0`. Elle sera authorisée.
+Ici la règle `ingress` indique quand une communication rentre sur le port `22/tcp` depuis toutes les adresses IP `0.0.0.0/0`. Elle sera donc autorisée.
 
 ### Étape 3 : Ajout des deux instances EC2
-Nous allons maintenant créer deux VM EC2. A la fin du fichier `main.tf` ajoutez : 
+Nous allons maintenant créer deux VM EC2. À la fin du fichier `main.tf` ajoutez : 
 ```HCL
 resource "aws_instance" "backs" {
   instance_type          = "t2.micro"
@@ -66,10 +63,10 @@ resource "aws_instance" "backs" {
   }
 }
 ```
-Vous remarquerez la présences des option `ami` pour l'image utilisée (Ubuntu 20.04), `key_name` votre clé SSH, `subnet_id` qui correspond à votre réseau privé. Ici on indique `count = 2`, cela permet de créer 2 VM en une seule instruction. Pour accéder au variables des VM nous pourrons faire : `aws_instance.backs.0.ma_var` (remplacer le 0 par 1 pour avoir la deuxième VM).
+Vous remarquerez la présence des options `ami` pour l’image utilisée (Ubuntu 20.04), `key_name` votre clé SSH, `subnet_id` qui correspond à votre réseau privé. Ici on indique `count = 2`, cela permet de créer 2 VM en une seule instruction. Pour accéder aux variables des VM, nous pourrons faire : `aws_instance.backs.0.la_var` (remplacer le 0 par 1 pour avoir la deuxième VM).
 
 ### Étape 4 : Ajout du Load-Balancer
-A la suite de vos VM dans le fichier `main.tf` ajoutez : 
+À la suite de vos VM dans le fichier `main.tf` ajoutez : 
 ```HCL
 resource "aws_elb" "lb" {
   name            = "load-balancer"
@@ -98,20 +95,38 @@ resource "aws_elb" "lb" {
   connection_draining_timeout = 400
 }
 ```
-Je vous invite à regarder la ligne `instances = aws_instance.backs.*.id`. Cette ligne indique les backends du Load Balancer. C'est sur ces VM que le Load Balancer redirigera le trafic. Le bloc `listener` indique sur quel port le LB écoute (`80`), avec quel protocole il doit écouter et où il doit rediriger (port + protocole). Le bloc `health_check` permet de savoir si les backends sont encore accessibles. Si ce n'est pas le cas, le LB sortira la VM du groupe de VM.
+Je vous invite à regarder la ligne `instances = aws_instance.backs.*.id`. Cette ligne indique tous les backends du Load Balancer. C’est sur ces VM que le Load Balancer redirigera le trafic. Le bloc `listener` indique sur quel port le LB écoute (`80`), avec quel protocole il doit écouter et où il doit rediriger (port + protocole). Le bloc `health_check` permet de savoir si les backends sont encore accessibles. Si ce n’est pas le cas, le LB sortira la VM du groupe de VM.
 
 ### Étape 5 : Script Ansible
-Je vous invite à lire le script Ansible dans `ansible/playbook.yaml`. Si vous ne savez pas comment fonctionne les commandes dans Linux, vous pouvez sauter cette étape.
-Pour faire un résumer sur ce script, je mets à jour Ubuntu puis j'ajoute un serveur HTTP Nginx. Et à la fin, j'injecte un fichier HTML pour avoir de quoi à afficher.
+Je vous invite à lire le script Ansible dans `ansible/playbook.yaml`. Si vous ne savez pas comment fonctionnent les commandes dans Linux, vous pouvez sauter cette étape.
+Pour faire un résumé de ce script, il met à jour Ubuntu puis ajoute un serveur HTTP Nginx. À la fin, il injecte un fichier HTML pour avoir de quoi à afficher.
 
 ### Étape 6 : Lancer Terraform
-Pour lancer Terraform, il faut d'abord l'initialiser. Depuis une console, déplacez vous dans le dossier que vous avez cloner puis faites `terraform init`. Cela va ajouter les dépendances requises pour AWS.
-Une fois initialiser vous pouvez lancer le test : `terraform plan`. Si vous avez des erreurs vérifier les étapes d'avant. 
-Si tout est bon vous pouvez lancer la création de l'infrastructure en faisant : `terraform apply`.
+Pour lancer Terraform, il faut d’abord l’initialiser. Depuis une console, déplacez-vous dans le dossier que vous avez cloné puis faites `terraform init`. Cela va ajouter les dépendances requises pour AWS.
+Une fois initialiser vous pouvez lancer le test : `terraform plan`. Si vous avez des erreurs, vérifiez les étapes d’avant. 
+Si tout est bon vous pouvez lancer la création de l’infrastructure en faisant : `terraform apply`.
 Vous avez créé votre infrastructure 🤗😎😊 Bravo!!!
 
 ### Étape 7 : Lancer Ansible
 Maintenant vous pouvez lancer Ansible. Pour ce faire, vous devez faire cette commande dans le dossier ansible : `ansible-playbook -i ../inventory playbook.yaml`
 
 ### Étape 8 : Tester votre infra
-Sur la console AWS allez chercher l'adresse IP de votre Load Balancer. Puis allez sur http://VOTRE_IP_LB/. Si vous avez une page web, bravo 😛 vous avez réussi 😜. Sinon, il est temps de debuguer 😑🙄
+Sur la console AWS, allez chercher l’adresse IP de votre Load Balancer. Puis allez sur http://VOTRE_IP_LB/. Si vous avez une page web, bravo 😛 vous avez réussi 😜. Sinon, il est temps de déboguer 😑🙄
+
+## Connexion SSH aux instances
+Cette étape n'est pas nécessaire pour le workshop. Elle peut par contre être utile pour déboguer ou pour essayer de pousser un peu plus loin.
+
+Pour se connecter à l’une au l’autre des instances, il faut utiliser la procédure suivante : 
+
+### Avec Putty (Windows)
+- Télécharger l’outil puTTY : https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
+- En l’ouvrant, sous "Host Name", mettre ```ubuntu@<ip de l’instance>```
+- Pour sélectionner le certificat, sous ```Connection -> SSH```, cliquer sur ```Auth```
+- Sous la section Authentification parameters, cliquer sur ```Browse...``` et sélectionner la clé privée que vous venez de créer (format .ppk, important)
+- Cliquer sur ```Open``` en bas à droite
+
+### Avec l’outil cli SSH
+- Le format de la clé privée doit être .PEM
+- Faire la commande : ```ssh — i "/chemin/de/la/cle/prive.pem" ubuntu@<ip de l’instance>``` (format .pem, important)
+
+Exemple : ```ssh -i "./infranets.pem" ubuntu@1.2.3.4```
