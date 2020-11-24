@@ -50,10 +50,10 @@ Pour que Ansible / Terraform fonctionne correctement, il faut avoir une clé SSH
 - Télécharger une key pair au format .pem (important!) à partir de la console d'AWS
 - Si vous utiliser un Windows, premièrement copier la clé dans votre répertoire personnel de Linux (```cp nomDeLaCle.pem ~/```)
 - Changer les permissions de la clé pour qu'elle respecte les règles d'AWS : ```chmod 700 nomDeLaCle.pem```
-- retenir le path de la clé, vous en aurez besoin pour Ansible plus tard
+- Retenir le path de la clé, vous en aurez besoin pour Ansible plus tard
 
 ## Création de votre infrastructure
-Vous allez devoir compléter le script afin de faire votre infrastructure. Je vais vous accompagner tout le long du workshop.
+Vous allez devoir compléter le script afin de faire votre infrastructure. Nous allons vous accompagner tout le long du workshop.
 
 ### Étape 1 : Paramétrer vos variables
 Voir le fichier ```variable.tf```
@@ -160,6 +160,7 @@ Pour se connecter à l’une au l’autre des instances, il faut utiliser la pro
 - En l’ouvrant, sous "Host Name", mettre ```ubuntu@<ip de l’instance>```
 - Pour sélectionner le certificat, sous ```Connection -> SSH```, cliquer sur ```Auth```
 - Sous la section Authentification parameters, cliquer sur ```Browse...``` et sélectionner la clé privée que vous venez de créer (format .ppk, important)
+    - Pour convertir une clé privé .pem et .ppk, suivre cette procédure : https://aws.amazon.com/premiumsupport/knowledge-center/convert-pem-file-into-ppk/
 - Cliquer sur ```Open``` en bas à droite
 
 ### Avec l’outil cli SSH
