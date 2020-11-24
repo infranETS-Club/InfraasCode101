@@ -148,7 +148,8 @@ Maintenant vous pouvez lancer Ansible. Pour ce faire, vous devez faire cette com
 ### Étape 8 : Tester votre infra
 Sur la console AWS, allez chercher l’adresse IP de votre Load Balancer. Puis allez sur http://VOTRE_IP_LB/. Si vous avez une page web, bravo 😛 vous avez réussi 😜. Sinon, il est temps de déboguer 😑🙄
 
-### destroy
+### Étape 9 : Détruire votre infra
+Pour détruire votre infrastrusture, vous n'avez qu'a faire la commande `terraform destroy`. SVP faire cette commande à la fin du workshop.
 
 ## Connexion SSH aux instances
 Cette étape n'est pas nécessaire pour le workshop. Elle peut par contre être utile pour déboguer ou pour essayer de pousser un peu plus loin.
