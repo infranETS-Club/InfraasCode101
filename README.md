@@ -1,12 +1,15 @@
 # Workshop Infrastructure as Code - InfranETS en partenariat avec la Banque Nationale
+## Conseil
+Pour faciliter le tout, je vous conseil d'utiliser VS Code pour ouvrir les fichiers. Il y existe même une extension terraform si vous voulez avoir des couleurs.
+
 ## Installer Terraform
 Pour que Terraform, il faut installer le bon exécutable
 - Télécharger le fichier binaire à partir de ce site : https://www.terraform.io/downloads.html
 - Dézipper le package
 - Déplacer le fichier exécutable dans le PATH de votre ordinateur
-    – Windows : C:\Windows\ (droits administrateur requis)
-    – Linux : /usr/bin (peut varier selon le distro)
-- Redémarrer le CLI et essayer la commande ```terraform version```
+  - Windows : C:\Windows\ (droits administrateur requis)
+  - Linux : /usr/bin (peut varier selon le distro)
+- Redémarrer le CLI (cmd) et essayer la commande ```terraform version```
 
 ## Installer Ansible
 Malheureusement, le CLI de Ansible n’est pas tout à fait compatible pour Windows. Ainsi, il faudra utiliser une distro de Linux pour exécuter la commande. Si vous avez seulement un ordinateur Windows, vous pouvez facilement utiliser le Windows subsystem Linux (WSL) pour faire cela (voir [ici](https://ubuntu.com/tutorials/ubuntu-on-windows) pour savoir comment faire). 
@@ -15,7 +18,7 @@ Pour installer Ansible, utiliser votre disto préféré de Linux et suivre les �
 
 Pour vérifier que tout fonctionne bien, faire la commande ```ansible-playbook --version```
 ### Important
-Pour que le playbook d’Ansible fonctionne bien, il faut absolument que vous exécutez Terraform et Ansible dans la même arborescence puisque Terraform "donne" des informations à Ansible pour bien fonctionner.
+Pour que le playbook d’Ansible fonctionne bien, il faut absolument que vous exécutiez Terraform et Ansible dans la même arborescence puisque Terraform "donne" des informations à Ansible pour bien fonctionner.
 
 ## Identifiants AWS (credentials)
 Pour que terraform utilise facilement les credentials d'AWS, faites comme suit :
@@ -24,7 +27,7 @@ Pour que terraform utilise facilement les credentials d'AWS, faites comme suit :
   - Windows : `cd %userprofile%`
   - Linux : `cd ~/`
 - Créer 2 fichiers sans extension : ```credentials``` et ```config```
-- Ajouter ce qui suit dans les fichiers
+- Ajouter ce qui suit dans les fichiers et les modifier avec les informations du courriel
 
 credentials
 ```HCL
@@ -55,7 +58,7 @@ Vous allez devoir compléter le script afin de faire votre infrastructure. Je va
 ### Étape 1 : Paramétrer vos variables
 Voir le fichier ```variable.tf```
 
-Pour le ```subnet_CIDR```, il faudra utiliser le sous-réseau avec le numéro que l’on vous a donné. Par exemple, si votre numéro est le 24, votre sous-réseau sera ```172.31.24.0/24```
+Pour le ```subnet_CIDR```, il faudra utiliser le sous-réseau avec le numéro que l’on vous a donné. Par exemple, si votre numéro est le 17, votre sous-réseau sera ```172.31.17.0/24```
 
 Pour la ```key name```, s’arrurer d’utiliser le même nom que vous avez entré dans la console d’AWS
 
@@ -144,6 +147,8 @@ Maintenant vous pouvez lancer Ansible. Pour ce faire, vous devez faire cette com
 
 ### Étape 8 : Tester votre infra
 Sur la console AWS, allez chercher l’adresse IP de votre Load Balancer. Puis allez sur http://VOTRE_IP_LB/. Si vous avez une page web, bravo 😛 vous avez réussi 😜. Sinon, il est temps de déboguer 😑🙄
+
+### destroy
 
 ## Connexion SSH aux instances
 Cette étape n'est pas nécessaire pour le workshop. Elle peut par contre être utile pour déboguer ou pour essayer de pousser un peu plus loin.
