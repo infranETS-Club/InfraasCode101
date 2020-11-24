@@ -1,6 +1,6 @@
 # Workshop Infrastructure as Code - InfranETS en partenariat avec la Banque Nationale
 ## Conseil
-Pour faciliter le tout, je vous conseil d'utiliser VS Code pour ouvrir les fichiers. Il y existe même une extension terraform si vous voulez avoir des couleurs.
+Pour faciliter le tout, je vous conseil d'utiliser VS Code pour ouvrir les fichiers. Il y existe même une extension terraform pour formater automatiquement le code.
 
 ## Installer Terraform
 Pour que Terraform, il faut installer le bon exécutable
